@@ -1,7 +1,10 @@
 from fastapi import FastAPI, UploadFile, File
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from dotenv import load_dotenv
+load_dotenv()  # Loads from .env file
 import supabase
+from supabase import create_client, Client  # <-- Make sure this is imported
 import os
 import io
 import requests  # <-- ADD THIS
@@ -13,8 +16,26 @@ app = FastAPI()
 def read_root():
     return {"message": "DocTalk AI Backend is Liverrr!"}
 
+load_dotenv()  # Loads from .env file
+
 # Ollama configuration - ADD THIS
 OLLAMA_URL = "http://localhost:11434"
+
+# Then your Supabase client
+supabase: Client = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_KEY")
+)
+
+@app.get("/test-db")
+def test_db():
+    try:
+        # Simple test query
+        response = supabase.table('documents').select("*").limit(1).execute()
+        return {"status": "Database connected!", "data": response.data}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # Embedding function - ADD THIS
 def get_embedding(text: str) -> list:
