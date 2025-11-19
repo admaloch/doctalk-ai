@@ -1,7 +1,7 @@
-# From your project root (doctalk-ai/)
 echo "backend/.env
 backend/venv/
+backend/.env
 __pycache__/
 *.pyc
 .DS_Store
-node_modules/" > .gitignore
+node_modules/" >> .gitignore
